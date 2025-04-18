@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.ArrayList;
 
 @Service
 public class MessageService {
@@ -16,7 +15,6 @@ public class MessageService {
     private final AccountRepository accountRepository;
     MessageRepository messageRepository;
 
-    @Autowired
     public MessageService(MessageRepository messageRepository, AccountRepository accountRepository) {
         this.messageRepository = messageRepository;
         this.accountRepository = accountRepository;
@@ -45,7 +43,9 @@ public class MessageService {
 
     public Message deleteMessage(int messageId) {
         Message oldMessage = getMessage(messageId); //refine
-        messageRepository.deleteById(messageId);
+        if (oldMessage != null) {
+            messageRepository.deleteById(messageId);
+        }
         return oldMessage;
     }
 
@@ -53,10 +53,7 @@ public class MessageService {
         return messageRepository.patchMessage(messageText, messageId); //refine
     }
 
-    public List<Message> getAllMessasgesFromUser(int accountId) {
-        if (accountRepository.existsById(accountId)) {
-            return messageRepository.findAllById(accountId);
-        }
-        return null;
+    public List<Message> getAllMessasgesFromUser(int postedBy) {
+        return messageRepository.findAllByPostedBy(postedBy);
     }
 }
