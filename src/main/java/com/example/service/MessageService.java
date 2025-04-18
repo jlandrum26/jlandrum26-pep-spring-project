@@ -4,7 +4,6 @@ import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,18 +41,28 @@ public class MessageService {
     }
 
     public Message deleteMessage(int messageId) {
-        Message oldMessage = getMessage(messageId); //refine
+        Message oldMessage = getMessage(messageId);
         if (oldMessage != null) {
             messageRepository.deleteById(messageId);
+            if (!(messageRepository.existsById(messageId))) {
+                return oldMessage;
+            }
         }
-        return oldMessage;
+        return null;
     }
 
     public Message updateMessage(String messageText, int messageId) {
-        return messageRepository.patchMessage(messageText, messageId); //refine
+        if (!(messageText.isEmpty())
+        && !(messageText.isBlank())
+        && (messageText.length() <= 255)
+        && messageRepository.existsById(messageId)) {
+            messageRepository.updateMessage(messageText, messageId);
+            return getMessage(messageId);
+        }
+        return null;
     }
 
-    public List<Message> getAllMessasgesFromUser(int postedBy) {
+    public List<Message> getAllMessagesFromUser(int postedBy) {
         return messageRepository.findAllByPostedBy(postedBy);
     }
 }

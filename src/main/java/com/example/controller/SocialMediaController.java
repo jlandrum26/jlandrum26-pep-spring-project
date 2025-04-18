@@ -92,7 +92,7 @@ public class SocialMediaController {
 
     @GetMapping("/account/{accountId}/messages")
     public ResponseEntity<List<Message>> getAllMessagesFromUser(@PathVariable int accountId) {
-        List<Message> messages = messageService.getAllMessasgesFromUser(accountId);
+        List<Message> messages = messageService.getAllMessagesFromUser(accountId);
         if (messages != null) {
             return ResponseEntity.status(HttpStatus.OK).body(messages);
         }
@@ -100,12 +100,20 @@ public class SocialMediaController {
     }
 
     @DeleteMapping("/messages/{messageID}")
-    public ResponseEntity<?> deleteMessage(@PathVariable int messageId) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int messageId) {
+        Message deletedMessage = messageService.deleteMessage(messageId);
+        if (deletedMessage != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PatchMapping("/messages/{messageID}")
-    public ResponseEntity<?> updateMessage(@PathVariable int messageId, @RequestBody String messageText) {
+    public ResponseEntity<Integer> updateMessage(@PathVariable int messageId, @RequestBody String messageText) {
+        Message updatedMessage = messageService.updateMessage(messageText, messageId);
+        if (updatedMessage != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }
