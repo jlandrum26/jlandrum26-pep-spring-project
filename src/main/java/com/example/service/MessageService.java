@@ -48,12 +48,13 @@ public class MessageService {
         return 0;
     }
 
-    public int updateMessage(String messageText, int messageId) {
-        if (!(messageText.isEmpty())
-        && !(messageText.isBlank())
-        && (messageText.length() <= 255)
+    public int updateMessage(Message message, int messageId) {
+        if (!(message.getMessageText().isEmpty())
+        && !(message.getMessageText().isBlank())
+        && (message.getMessageText().length() <= 255)
         && messageRepository.existsById(messageId)) {
-            messageRepository.updateMessage(messageText, messageId);
+            message.setMessageId(messageId);
+            messageRepository.save(message);
             return 1;
         }
         return 0;
