@@ -40,26 +40,23 @@ public class MessageService {
         return null;
     }
 
-    public Message deleteMessage(int messageId) {
-        Message oldMessage = getMessage(messageId);
-        if (oldMessage != null) {
+    public int deleteMessage(int messageId) {
+        if (messageRepository.existsById(messageId)) {
             messageRepository.deleteById(messageId);
-            if (!(messageRepository.existsById(messageId))) {
-                return oldMessage;
-            }
+            return 1;
         }
-        return null;
+        return 0;
     }
 
-    public Message updateMessage(String messageText, int messageId) {
+    public int updateMessage(String messageText, int messageId) {
         if (!(messageText.isEmpty())
         && !(messageText.isBlank())
         && (messageText.length() <= 255)
         && messageRepository.existsById(messageId)) {
             messageRepository.updateMessage(messageText, messageId);
-            return getMessage(messageId);
+            return 1;
         }
-        return null;
+        return 0;
     }
 
     public List<Message> getAllMessagesFromUser(int postedBy) {
